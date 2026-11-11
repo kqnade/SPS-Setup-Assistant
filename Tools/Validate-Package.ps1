@@ -132,6 +132,12 @@ foreach ($relative in @('Assets/IcePop/IcePop.fbx','Assets/IcePop/IcePop.mat','D
     Assert-Condition (Test-Path -LiteralPath (Join-Path $packageRoot $relative)) "Missing approved display asset/provenance: $relative"
 }
 
+# Exact observed aliases must remain wired into the build lookup.
+$buildIntegration = Get-Content -Raw -LiteralPath (Join-Path $packageRoot 'Editor/Compatibility/Sps2BuildIntegration.cs')
+Assert-Condition ($buildIntegration.Contains('Unique(entries, AutoLabel, false, AutoSps3Label)')) 'SPS3 Auto lookup is missing.'
+Assert-Condition ($buildIntegration.Contains('Unique(entries, LegacyLabel, false, LegacySps3Label)')) 'SPS3 Legacy lookup is missing.'
+Assert-Condition (Test-Path -LiteralPath (Join-Path $packageRoot 'Tests/Editor/Sps3MenuCompatibilityTests.cs')) 'SPS3 menu regression tests are missing.'
+
 & git -C $repoRoot diff --check
 if ($LASTEXITCODE -ne 0) {
     throw 'git diff --check failed for unstaged changes.'

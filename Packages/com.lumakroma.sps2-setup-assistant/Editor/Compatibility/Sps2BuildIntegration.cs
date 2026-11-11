@@ -27,8 +27,10 @@ namespace LumaKroma.Sps2SetupAssistant.Editor.Compatibility
 
     public static class Sps2BuildIntegration
     {
-        private const string AutoLabel = "<b>Auto Mode</b>\n<size=20>Activates hole nearest to a VRCFury plug";
-        private const string LegacyLabel = "<b>Legacy Compatibility</b>\n<size=20>DPS / TPS / SPS1\nOne socket at a time";
+        internal const string AutoLabel = "<b>Auto Mode</b>\n<size=20>Activates hole nearest to a VRCFury plug";
+        internal const string LegacyLabel = "<b>Legacy Compatibility</b>\n<size=20>DPS / TPS / SPS1\nOne socket at a time";
+        internal const string AutoSps3Label = "<b>Auto</b>";
+        internal const string LegacySps3Label = "<b>Legacy Support</b>\n<size=20>DPS/TPS/SPS1/SPS2\nOne socket at a time";
         private const string LocalOnlyLabel = "<b>Stealth Mode</b>\n<size=20>Only local haptics,\nInvisible to others";
 
         private static readonly Dictionary<int, Sps2SetupContext> Pending = new Dictionary<int, Sps2SetupContext>();
@@ -100,11 +102,23 @@ namespace LumaKroma.Sps2SetupAssistant.Editor.Compatibility
             }
             return result;
         }
-        private static MenuEntry Unique(List<MenuEntry> entries, string label, bool required)
+        // Match only observed native labels. Search all aliases together so an old
+        // and a new control appearing together remains an ambiguous build error.
+        internal static VRCExpressionsMenu.Control FindUniqueToggle(
+            IEnumerable<VRCExpressionsMenu.Control> controls, string label, bool required, params string[] aliases)
         {
-            var matching = entries.Where(e => e.control.name == label && e.control.type == VRCExpressionsMenu.Control.ControlType.Toggle).ToArray();
-            if (matching.Length > 1 || (required && matching.Length != 1)) throw new InvalidOperationException(L("SPS メニューの対応が不明です: ") + label);
+            var labels = new HashSet<string>(aliases, StringComparer.Ordinal) { label };
+            var matching = controls.Where(control => control != null &&
+                control.type == VRCExpressionsMenu.Control.ControlType.Toggle && labels.Contains(control.name)).ToArray();
+            if (matching.Length > 1 || (required && matching.Length != 1))
+                throw new InvalidOperationException(L("SPS メニューの対応が不明です: ") + label);
             return matching.SingleOrDefault();
+        }
+
+        private static MenuEntry Unique(List<MenuEntry> entries, string label, bool required, params string[] aliases)
+        {
+            var control = FindUniqueToggle(entries.Select(e => e.control), label, required, aliases);
+            return control == null ? null : entries.Single(e => ReferenceEquals(e.control, control));
         }
         private static VRCExpressionsMenu Menu(string name)
         {
@@ -136,8 +150,8 @@ namespace LumaKroma.Sps2SetupAssistant.Editor.Compatibility
                 owned.Add(socket.id, entry);
             }
             StabilizeOwnedSocketToggles(avatar, fx, root, owned.ToDictionary(p => p.Key, p => p.Value.control.parameter.name));
-            var auto = Unique(entries, AutoLabel, false);
-            var legacy = Unique(entries, LegacyLabel, false);
+            var auto = Unique(entries, AutoLabel, false, AutoSps3Label);
+            var legacy = Unique(entries, LegacyLabel, false, LegacySps3Label);
             var localOnly = Unique(entries, LocalOnlyLabel, root.settings.localOnly);
             if (localOnly != null) SetPersistence(avatar, fx, localOnly, false, 0);
             if (root.settings.legacy && legacy == null) throw new InvalidOperationException(L("後方互換性メニューがありません。"));
