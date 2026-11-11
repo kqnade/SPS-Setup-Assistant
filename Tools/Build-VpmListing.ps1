@@ -7,7 +7,7 @@ $sourcePath=[IO.Path]::GetFullPath((Join-Path $root $SourceDirectory))
 $out=[IO.Path]::GetFullPath((Join-Path $root $OutputDirectory))
 $source=Get-Content (Join-Path $sourcePath 'source.json') -Raw | ConvertFrom-Json -AsHashtable
 $id='com.lumakroma.sps2-setup-assistant'
-if ($source.id -ne 'com.lumakroma.sps2-listing' -or $source.packages.Count -ne 1 -or $source.packages[0].name -ne $id) { throw 'Unexpected listing source' }
+if ($source.id -ne 'com.kqnade.sps2-listing' -or $source.packages.Count -ne 1 -or $source.packages[0].name -ne $id) { throw 'Unexpected listing source' }
 $expected=@(Get-Content (Join-Path $sourcePath 'expected-versions.json') -Raw | ConvertFrom-Json)
 [IO.Directory]::CreateDirectory($out) | Out-Null
 $versions=@{}
@@ -16,7 +16,7 @@ foreach ($url in $source.packages[0].releases) {
     $file=[IO.Path]::GetFileName($uri.AbsolutePath)
     if ($file -notmatch '^com\.lumakroma\.sps2-setup-assistant-(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)\.zip$') { throw 'Unexpected ZIP name' }
     $version=$Matches[1]
-    $canonical="https://github.com/LumaKroma/SPS2-Setup-Assistant/releases/download/$version/$file"
+    $canonical="https://github.com/kqnade/SPS-Setup-Assistant/releases/download/$version/$file"
     $local=$AllowLoopback -and $uri.Scheme -eq 'http' -and $uri.Host -eq '127.0.0.1'
     if ($url -cne $canonical -and -not $local) { throw 'Unexpected release URL' }
     if ($versions.ContainsKey($version)) { throw 'Duplicate version' }

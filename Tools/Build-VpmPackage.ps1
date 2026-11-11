@@ -39,7 +39,7 @@ try {
     }
 } finally { $archive.Dispose() }
 $hash = (Get-FileHash -LiteralPath $zipPath -Algorithm SHA256).Hash.ToLowerInvariant()
-$manifest | Add-Member url ("https://github.com/LumaKroma/SPS2-Setup-Assistant/releases/download/" + $manifest.version + '/' + [IO.Path]::GetFileName($zipPath)) -Force
+$manifest | Add-Member url ("https://github.com/kqnade/SPS-Setup-Assistant/releases/download/" + $manifest.version + '/' + [IO.Path]::GetFileName($zipPath)) -Force
 $manifest | Add-Member zipSHA256 $hash -Force
 $utf8 = [Text.UTF8Encoding]::new($false)
 [IO.File]::WriteAllText((Join-Path $out 'package.json'),($manifest | ConvertTo-Json -Depth 12)+"`n",$utf8)

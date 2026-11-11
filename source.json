@@ -1,16 +1,16 @@
 {
-  "description": "SPS2 Setup Assistant",
+  "description": "Unofficial SPS3 menu-label compatibility fork of SPS2 Setup Assistant",
   "githubRepos": [],
   "infoLink": {
-    "url": "https://github.com/LumaKroma/SPS2-Setup-Assistant",
+    "url": "https://github.com/kqnade/SPS-Setup-Assistant",
     "text": "GitHub"
   },
-  "url": "https://lumakroma.github.io/SPS2-Setup-Assistant/index.json",
-  "id": "com.lumakroma.sps2-listing",
-  "name": "LumaKroma SPS2 Setup Assistant",
+  "url": "https://kqnade.github.io/SPS-Setup-Assistant/index.json",
+  "id": "com.kqnade.sps2-listing",
+  "name": "kqnade SPS2 Setup Assistant prereleases",
   "author": {
-    "url": "https://github.com/LumaKroma",
-    "name": "LumaKroma"
+    "url": "https://github.com/kqnade",
+    "name": "kqnade"
   },
   "packages": []
 }
