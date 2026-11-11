@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.2-kqnade.1 (prerelease)
+
+- Unofficial fork of 1.1.1 with exact SPS3 Auto and Legacy Support menu-label recognition for the observed VRCFury 1.1452.0 schema. Full SPS3 compatibility is not certified.
+- Distribute fork-owned Release assets through a distinct VPM listing, retaining the upstream package ID, author and MIT license. Enable prerelease packages and explicitly select this version in VCC/ALCOM.
+- Unity compilation, EditMode tests, VRChat runtime behavior and VCC/ALCOM installation remain unverified for this fork.
+
 ## 1.1.1 - Unreleased
 
 - Support authored positive uniform scale for finger rings, preserving legacy unit-scale calibration and refreshing native distances on Apply.

@@ -16,6 +16,8 @@ jobs:
       - name: Validate and build package
         shell: pwsh
         run: |
+          python ./Tools/Test-VpmDistribution.py
+          if ($LASTEXITCODE -ne 0) { throw 'Fork distribution validation failed' }
           ./Tools/Validate-Package.ps1
           ./Tools/Build-VpmPackage.ps1
       - name: Create immutable release draft
@@ -34,9 +36,9 @@ jobs:
             const releases = await github.paginate(github.rest.repos.listReleases, { owner, repo });
             if (releases.some(r => r.tag_name === version)) throw new Error('Release already exists, including drafts.');
             const release = await github.rest.repos.createRelease({ owner, repo,
-              tag_name: version, target_commitish: context.sha, name: `SPS2 Setup Assistant ${version}`,
+              tag_name: version, target_commitish: context.sha, name: `SPS2 Setup Assistant ${version} (kqnade fork)`,
               draft: true, prerelease: version.includes('-'),
-              body: `Source: ${context.sha}\n\nDraft only. Complete the checks in VPM_RELEASE.md before publishing.` });
+              body: `Unofficial prerelease based on LumaKroma/SPS2-Setup-Assistant 1.1.1, with exact SPS3 Auto and Legacy Support menu-label recognition. Full SPS3 compatibility is not certified.\n\nSource: ${context.sha}\n\nUnity compilation, EditMode tests, VRChat runtime behavior and VCC/ALCOM installation are unverified. Back up the entire project before installation.\n\nVPM repository: https://kqnade.github.io/SPS-Setup-Assistant/index.json\nEnable prerelease packages in VCC/ALCOM and select version ${version}.` });
             for (const name of [`${manifest.name}-${version}.zip`, 'package.json']) {
               const data = fs.readFileSync(path.join('.artifacts/vpm', name));
               await github.rest.repos.uploadReleaseAsset({ owner, repo, release_id: release.data.id,

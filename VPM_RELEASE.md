@@ -1,5 +1,41 @@
 # VPM release handoff
 
+## Fork prerelease distribution
+
+- Repository: `kqnade/SPS-Setup-Assistant`.
+- Version: `1.1.2-kqnade.1`; release type: GitHub prerelease.
+- Package ID: `com.lumakroma.sps2-setup-assistant`; the original LumaKroma author and MIT license are retained.
+- Listing ID: `com.kqnade.sps2-listing`.
+- Listing URL: `https://kqnade.github.io/SPS-Setup-Assistant/index.json`.
+
+This unofficial fork is based on upstream 1.1.1 and recognizes the observed SPS3
+Auto and Legacy Support labels. It does not certify full SPS3 compatibility.
+Unity compilation, EditMode tests, VRChat runtime behavior and VCC/ALCOM
+installation are unverified for this fork. Package CI validates distribution
+configuration, package boundaries and reproducible ZIPs, not those manual gates.
+
+1. Run the distribution checks and package/reproducibility CI on the release commit.
+2. Run **Prepare VPM release draft** on reviewed `main`. It creates a draft with
+   the package ZIP and its distribution manifest; existing versions are refused.
+3. Verify the source commit, root manifest, version, fork-owned download URL and
+   ZIP SHA256 before publishing the draft as a prerelease. Keep published assets
+   immutable and include the unverified-status notice in the release notes.
+4. Run **Publish VPM listing** on `main` after publication. The release publication
+   event can also start it; `main` is appropriate when the Pages environment only
+   permits deployment from the default branch. Pages must use GitHub Actions.
+5. Check the public listing, archive URL and hash, then test a fresh VCC/ALCOM
+   installation separately. Enable prerelease packages and select the exact fork
+   version, especially when an upstream repository is also registered.
+
+The website distributes this fork through VCC/ALCOM; it does not provide a
+standalone unitypackage installer. Retain the complete-project backup and legacy
+Assets deletion warnings in the README.
+
+## Historical upstream procedures
+
+The sections below describe LumaKroma releases and their historical evidence;
+they are not the distribution settings or validation results of this fork.
+
 ## Current 1.1.0 preparation (2026-10-02, unpublished)
 
 The current distribution is the official VPMPackageAutoInstaller (VPAI)
